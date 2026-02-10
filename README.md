@@ -52,7 +52,7 @@
 
 确保仓库根目录下包含以下文件：
 
-* `.github/workflows/generate_bestcf.yml` (即您提供的 YAML 代码)
+* `.github/workflows/generate_bestcf.yml` 
 * `filter.py` (核心过滤脚本)
 
 ---
@@ -78,10 +78,6 @@
 * **SSL 报错**：脚本中已全局添加 `--ssl-no-revoke` 参数，解决了 Windows 上某些网络环境下证书吊销检查失败的问题。
 * **Python 编码**：在 Windows 上运行 Python 务必设置 `PYTHONIOENCODING: utf-8` 环境变量，否则处理中文注释（如：`移动/电信`）时会崩溃。
 
-```
-
----
-
 ## 📈 订阅与使用
 
 您可以直接通过 jsDelivr 引用本项目生成的结果：
@@ -89,6 +85,4 @@
 * **优选域名**：`https://cdn.jsdelivr.net/gh/你的用户名/仓库名@bestcf/bestcf-domain.txt`
 * **优选 IP**：`https://cdn.jsdelivr.net/gh/你的用户名/仓库名@bestcf/bestcf-ip.txt`
 
----
 
-**想让我为您优化 `filter.py` 的过滤逻辑，或者添加更高级的延迟检测功能吗？**
