@@ -14,7 +14,8 @@ jobs:
   build:
     runs-on: self-hosted # 强制在你的本地 Windows 运行器上执行
     permissions:
-      contents: write
+      contents: write  # 用于推送分支和创建 Release
+      actions: write   # 关键：用于删除旧的工作流运行记录
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
