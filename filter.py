@@ -74,7 +74,7 @@ def process_file(filename, summary_set):
                 flag = get_flag(country_tag) if len(country_tag) == 2 else "🌐"
                 
                 # 移除延迟标注，仅保留：IP#国旗国家码_原注释
-                new_line = f"{ip}#{flag}{country_tag}_{old_comment}"
+                new_line = f"{ip}#{flag} {country_tag} | {old_comment}"
                 
                 if country_tag not in categorized_data:
                     categorized_data[country_tag] = []
