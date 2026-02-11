@@ -32,22 +32,42 @@ def get_flag(country_code):
 
 def get_ip_location(ip):
     """
-    仅获取国家码(Colo)，移除延迟测试逻辑
+    获取 IP 位置。
+    逻辑：优先尝试直连 Cloudflare 获取 Colo，失败则使用在线 GeoIP API。
     """
-    clean_ip = ip.replace('[', '').replace(']', '')
+    # 1. 清洗 IP 格式
+    clean_ip = ip.replace('[', '').replace(']', '').strip()
     is_ipv6 = ":" in clean_ip
-    url = f"http://[{clean_ip}]/cdn-cgi/trace" if is_ipv6 else f"http://{clean_ip}/cdn-cgi/trace"
+    
+    # 2. 尝试直连探测 (Cloudflare Trace)
+    # IPv6 在 URL 中必须包裹在 [] 中
+    trace_url = f"http://[{clean_ip}]/cdn-cgi/trace" if is_ipv6 else f"http://{clean_ip}/cdn-cgi/trace"
     
     try:
-        # 强制直连探测
-        resp = requests.get(url, timeout=2.0, verify=False, proxies={'http': None, 'https': None})
+        # 增加 User-Agent 伪装，避免被部分安全策略拦截
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+        resp = requests.get(trace_url, timeout=2.5, verify=False, headers=headers, proxies={'http': None, 'https': None})
+        
         if resp.status_code == 200:
             colo_match = re.search(r'colo=([A-Z]{3})', resp.text)
             if colo_match:
                 colo = colo_match.group(1)
                 return COLO_MAP.get(colo, colo)
+    except Exception:
+        # 如果直连失败（通常是因为本地无 IPv6 网络），执行下一步：在线 API 探测
+        pass
+
+    # 3. 【保底方案】使用在线 API（解决本地无 IPv6 环境问题）
+    try:
+        # 使用 ip-api.com 接口获取国家码
+        api_url = f"http://ip-api.com/json/{clean_ip}?fields=countryCode"
+        resp = requests.get(api_url, timeout=3.0)
+        if resp.status_code == 200:
+            data = resp.json()
+            return data.get("countryCode")
     except:
         pass
+
     return None
 
 def process_file(filename, summary_set):
