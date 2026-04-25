@@ -119,4 +119,4 @@ proxy-groups:
 
 **推荐设置**  
 ① 进入 [zashboard 面板](https://github.com/Zephyruso/zashboard) → 代理 → 代理设置 → 管理隐藏代理组，隐藏不必要显示的代理组  
-② 进入 zashboard 面板 → 设置 → 图标，设置“自定义图标”，可参考 [icon 文件](https://github.com/DustinWin/ruleset_geodata/releases/tag/icons)
+② 进入 zashboard 面板 → 设置 → 代理设置 → 外观 → 自定义图标，设置“组名”和“URL”，“URL”可参考 [icon 文件](https://github.com/DustinWin/ruleset_geodata/releases/tag/icons)
