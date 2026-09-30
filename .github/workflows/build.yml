@@ -25,8 +25,7 @@ jobs:
         run: |
           echo "update_version=$(date -d '+8 hours' +%Y-%m-%d)" >> "${GITHUB_ENV}"
           mkdir -p ./tmp/ ./bestcf/
-          curl -fsSL https://cf.090227.xyz | grep 'copyDomain' | awk -F "'" '{print $2}' > ./tmp/temp-bestcf-domain.txt
-          curl -fsSL https://cf.090227.xyz | sed -n '/官方优选域名列表/,/<\/pre>/p' | grep '\.' | sed 's/.*<pre>//; s/<\/pre>$//; s/#.*//' >> ./tmp/temp-bestcf-domain.txt
+          curl -fsSL https://cf.090227.xyz/#/domains | awk '/copyDomain/ && !/https/'  | awk -F "'" '{print $2}' > ./tmp/temp-bestcf-domain.txt
           curl -fsSL https://vps789.com/openApi/cfIpTop20 | jq -r '.data.good[].ip' | head -n 5 >> ./tmp/temp-bestcf-domain.txt
           curl -fsSL https://www.wetest.vip/page/cloudflare/cname.html | grep 'data-label=\"地址名称\"' | awk -F '[<>]' '{print $3}' | sed 's/^\*/bestcf/' | head -n 5 >> ./tmp/temp-bestcf-domain.txt
           cat ./tmp/temp-bestcf-domain.txt | sort --ignore-case -u > ./bestcf/bestcf-domain.txt
