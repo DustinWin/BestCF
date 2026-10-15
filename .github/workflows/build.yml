@@ -27,6 +27,7 @@ jobs:
           mkdir -p ./tmp/ ./bestcf/
           curl -fsSL https://cf.090227.xyz/#/domains | sed -n '/copyBtn/s/.*data-copy="\([^"]*\)".*/\1/p' > ./tmp/temp-bestcf-domain.txt
           curl -fsSL https://vps789.com/openApi/cfIpTop20 | jq -r '.data.good[].ip' | head -n 5 >> ./tmp/temp-bestcf-domain.txt
+          curl -fsSL https://ipdb.030101.xyz/bestdomain | sed -n '/优选官方IP域名/,/<\/blockquote>/s/.*<span class="highlight">\([^<]*\)<\/span>.*/\1/p' >> ./tmp/temp-bestcf-domain.txt
           curl -fsSL https://www.wetest.vip/page/cloudflare/cname.html | grep -oP '(?<=<td data-label="地址名称">)[^<]+' | sed 's/^\*/bestcf/' | head -n 5 >> ./tmp/temp-bestcf-domain.txt
           cat ./tmp/temp-bestcf-domain.txt | sort --ignore-case -u > ./bestcf/bestcf-domain.txt
           rm -rf ./tmp*
@@ -35,33 +36,32 @@ jobs:
         run: |
           # CMCC-IP
           curl -fsSL https://cf.090227.xyz/cmcc?ips=5 | sed 's/#.*//' | awk '{print $0 "#CMCC-IPv4_CMLiu_" NR}' > ./bestcf/cmcc-ip.txt
-          curl -fsSL https://cf.090227.xyz/cmcc-ipv6 | sed 's/#.*//' | awk '{print $0 "#CMCC-IPv6_CMLiu_" NR}' >> ./bestcf/cmcc-ip.txt
           curl -fsSL https://vps789.com/openApi/cfIpApi | jq -r '.data.CM[].ip' | awk '{print $0 "#CMCC-IPv4_VPS789_" NR}' >> ./bestcf/cmcc-ip.txt
           curl -fsSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys"}' | jq -r '.info[] | select(.line == "CM") | .ip' | awk '{print $0 "#CMCC-IPv4_CFYes_" NR}' >> ./bestcf/cmcc-ip.txt
           curl -fsSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys","type":"v6"}' | jq -r '.info[] | select(.line == "CM") | .ip' | awk '{print "["$0"]#CMCC-IPv6_CFYes_" NR}' >> ./bestcf/cmcc-ip.txt
-          curl -fsSL https://www.wetest.vip/page/cloudflare/address_v4.html | awk '/移动/{getline; print}' | awk -F '[<>]' '{print $3}' | awk '{print $0 "#CMCC-IPv4_WeTest_" NR}' >> ./bestcf/cmcc-ip.txt
-          curl -fsSL https://www.wetest.vip/page/cloudflare/address_v6.html | awk '/移动/{getline; print}' | awk -F '[<>]' '{print $3}' | awk '{print "["$0"]#CMCC-IPv6_WeTest_" NR}' >> ./bestcf/cmcc-ip.txt
+          curl -fsSL "https://www.wetest.vip/api/cf2dns/get_cloudflare_ip?key=o1zrmHAF&type=v4" | jq -r '.info.CM[].ip' | awk '{print $0 "#CMCC-IPv4_WeTest_" NR}' >> ./bestcf/cmcc-ip.txt
+          curl -fsSL "https://www.wetest.vip/api/cf2dns/get_cloudflare_ip?key=o1zrmHAF&type=v6" | jq -r '.info.CM[].ip' | awk '{print "["$0"]#CMCC-IPv6_WeTest_" NR}' >> ./bestcf/cmcc-ip.txt
 
           # CUCC-IP
           curl -fsSL https://cf.090227.xyz/cu?ips=5 | sed 's/#.*//' | awk '{print $0 "#CUCC-IPv4_CMLiu_" NR}' > ./bestcf/cucc-ip.txt
           curl -fsSL https://vps789.com/openApi/cfIpApi | jq -r '.data.CU[].ip' | awk '{print $0 "#CUCC-IPv4_VPS789_" NR}' >> ./bestcf/cucc-ip.txt
           curl -fsSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys"}' | jq -r '.info[] | select(.line == "CU") | .ip' | awk '{print $0 "#CUCC-IPv4_CFYes_" NR}' >> ./bestcf/cucc-ip.txt
           curl -fsSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys","type":"v6"}' | jq -r '.info[] | select(.line == "CU") | .ip' | awk '{print "["$0"]#CUCC-IPv6_CFYes_" NR}' >> ./bestcf/cucc-ip.txt
-          curl -fsSL https://www.wetest.vip/page/cloudflare/address_v4.html | awk '/联通/{getline; print}' | awk -F '[<>]' '{print $3}' | awk '{print $0 "#CUCC-IPv4_WeTest_" NR}' >> ./bestcf/cucc-ip.txt
-          curl -fsSL https://www.wetest.vip/page/cloudflare/address_v6.html | awk '/联通/{getline; print}' | awk -F '[<>]' '{print $3}' | awk '{print "["$0"]#CUCC-IPv6_WeTest_" NR}' >> ./bestcf/cucc-ip.txt
+          curl -fsSL "https://www.wetest.vip/api/cf2dns/get_cloudflare_ip?key=o1zrmHAF&type=v4" | jq -r '.info.CU[].ip' | awk '{print $0 "#CUCC-IPv4_WeTest_" NR}' >> ./bestcf/cucc-ip.txt
+          curl -fsSL "https://www.wetest.vip/api/cf2dns/get_cloudflare_ip?key=o1zrmHAF&type=v6" | jq -r '.info.CU[].ip' | awk '{print "["$0"]#CUCC-IPv6_WeTest_" NR}' >> ./bestcf/cucc-ip.txt
 
           # CTCC-IP
           curl -fsSL https://cf.090227.xyz/ct?ips=5 | sed 's/#.*//' | awk '{print $0 "#CTCC-IPv4_CMLiu_" NR}' > ./bestcf/ctcc-ip.txt
           curl -fsSL https://vps789.com/openApi/cfIpApi | jq -r '.data.CT[].ip' | awk '{print $0 "#CTCC-IPv4_VPS789_" NR}' >> ./bestcf/ctcc-ip.txt
           curl -fsSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys"}' | jq -r '.info[] | select(.line == "CT") | .ip' | awk '{print $0 "#CTCC-IPv4_CFYes_" NR}' >> ./bestcf/ctcc-ip.txt
           curl -fsSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys","type":"v6"}' | jq -r '.info[] | select(.line == "CT") | .ip' | awk '{print "["$0"]#CTCC-IPv6_CFYes_" NR}' >> ./bestcf/ctcc-ip.txt
-          curl -fsSL https://www.wetest.vip/page/cloudflare/address_v4.html | awk '/电信/{getline; print}' | awk -F '[<>]' '{print $3}' | awk '{print $0 "#CTCC-IPv4_WeTest_" NR}' >> ./bestcf/ctcc-ip.txt
-          curl -fsSL https://www.wetest.vip/page/cloudflare/address_v6.html | awk '/电信/{getline; print}' | awk -F '[<>]' '{print $3}' | awk '{print "["$0"]#CTCC-IPv6_WeTest_" NR}' >> ./bestcf/ctcc-ip.txt
+          curl -fsSL "https://www.wetest.vip/api/cf2dns/get_cloudflare_ip?key=o1zrmHAF&type=v4" | jq -r '.info.CT[].ip' | awk '{print $0 "#CTCC-IPv4_WeTest_" NR}' >> ./bestcf/ctcc-ip.txt
+          curl -fsSL "https://www.wetest.vip/api/cf2dns/get_cloudflare_ip?key=o1zrmHAF&type=v6" | jq -r '.info.CT[].ip' | awk '{print "["$0"]#CTCC-IPv6_WeTest_" NR}' >> ./bestcf/ctcc-ip.txt
 
           # CF-IP
-          curl -fsSL https://ip.164746.xyz/ipTop10.html | tr ',' '\n' | head -n 5 | awk '{print $0 "#CF-IPv4_CFSpeedTest_" NR}' >> ./bestcf/bestcf-ip.txt
-          curl -fsSL https://ipdb.api.030101.xyz/?type=bestcfv4 | head -n 5 | awk '{print $0 "#CF-IPv4_IPDB_" NR}' >> ./bestcf/bestcf-ip.txt
+          curl -fsSL https://ipdb.api.030101.xyz/?type=bestcfv4 | head -n 5 | awk '{print $0 "#CF-IPv4_IPDB_" NR}' > ./bestcf/bestcf-ip.txt
           curl -fsSL https://ipdb.api.030101.xyz/?type=bestcfv6 | head -n 5 | awk '{print "["$0"]#CF-IPv6_IPDB_" NR}' >> ./bestcf/bestcf-ip.txt
+          curl -fsSL https://ip.164746.xyz/ipTop10.html | tr ',' '\n' | head -n 5 | awk '{print $0 "#CF-IPv4_CFSpeedTest_" NR}' >> ./bestcf/bestcf-ip.txt
 
           # Proxy-IP
           curl -fsSL https://ipdb.api.030101.xyz/?type=bestproxy | head -n 5 | awk '{print $0 "#Proxy-IPv4_IPDB_" NR}' > ./bestcf/proxy-ip.txt
